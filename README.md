@@ -1,3 +1,42 @@
+# guided-diffusion non distributed single GPU fork for use at home
+As the official OpenAI [Guided Diffusion](https://github.com/openai/guided-diffusion) and [Improved Diffusion](https://github.com/openai/improved-diffusion) implementations crash on non-distributed systems (like my laptop), here is a customised version of Guided Diffusion with the distributed capability disabled for use at home. This won't be updated with the original project, but these changes can be implemented locally as the official implementation is updated
+
+Changes to official implementation (these also work in Improved Diffusion):
+* guided_diffusion/train_util.py: disabled distributed synch params call, commented out line 124
+* guided_diffusion/dist_util.py: changed hostname and backend code, starting on line 31:
+
+> /# SINGLE SYSTEM FIX: Set backend to 'gloo' all the time and hostname to 'localhost'
+>
+>#FIX: added below
+>
+>hostname = "localhost"
+>
+>backend = "gloo"
+>
+>#FIX: commented out below
+>
+>#backend = "gloo" if not th.cuda.is_available() else "nccl"
+>
+>#if backend == "gloo":
+>
+>/#    hostname = "localhost"
+>
+>#else:
+>
+>/#    hostname = socket.gethostbyname(socket.getfqdn())
+
+Note that to train at home, you'll likely need to change some input parameters due to GPU memory limitations:
+* Use --microbatch instead of --batch. E.g. --microbatch 4
+* Potentially reduce --image_size and --num_channels to lower numbers, such as 256 and 64
+
+Also note that although undocumented, I recommend training with the guided diffusion codebase rather than improved diffusion, as it contains things such as support for an image size of 512.
+
+Example command line to train from scratch with a bunch of images in the images/training folder:
+python scripts/image_train.py --data_dir images/training --image_size 256 --num_channels 128 --num_res_blocks 3 --diffusion_steps 1000 --noise_schedule linear --lr 2e-5 --microbatch 4 --learn_sigma True 
+
+This won't be maintained, but hope it helps someone out there - I already hit the same issues yesterday in the improved_diffusion codebase
+
+
 # guided-diffusion
 
 This is the codebase for [Diffusion Models Beat GANS on Image Synthesis](http://arxiv.org/abs/2105.05233).
