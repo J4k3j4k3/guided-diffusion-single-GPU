@@ -120,7 +120,7 @@ class TrainLoop:
                     )
                 )
 
-        dist_util.sync_params(self.model.parameters())
+        #dist_util.sync_params(self.model.parameters())
 
     def _load_ema_parameters(self, rate):
         ema_params = copy.deepcopy(self.mp_trainer.master_params)
