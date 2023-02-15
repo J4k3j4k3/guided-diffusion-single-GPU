@@ -27,12 +27,17 @@ def setup_dist():
     os.environ["CUDA_VISIBLE_DEVICES"] = f"{MPI.COMM_WORLD.Get_rank() % GPUS_PER_NODE}"
 
     comm = MPI.COMM_WORLD
-    backend = "gloo" if not th.cuda.is_available() else "nccl"
+    # SINGLE SYSTEM FIX: Set backend to 'gloo' all the time and hostname to 'localhost'
+    #FIX: added below
+    hostname = "localhost"
+    backend = "gloo"
+    #FIX: commented out below
+    #backend = "gloo" if not th.cuda.is_available() else "nccl"
+    #if backend == "gloo":
+    #    hostname = "localhost"
+    #else:
+    #    hostname = socket.gethostbyname(socket.getfqdn())
 
-    if backend == "gloo":
-        hostname = "localhost"
-    else:
-        hostname = socket.gethostbyname(socket.getfqdn())
     os.environ["MASTER_ADDR"] = comm.bcast(hostname, root=0)
     os.environ["RANK"] = str(comm.rank)
     os.environ["WORLD_SIZE"] = str(comm.size)
