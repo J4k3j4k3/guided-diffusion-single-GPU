@@ -1,5 +1,5 @@
 # guided-diffusion non distributed single GPU fork for use at home
-As the official OpenAI [Guided Diffusion](https://github.com/openai/guided-diffusion) and [Improved Diffusion](https://github.com/openai/improved-diffusion) implementations crash on non-distributed systems (like my laptop), here is a customised version of Guided Diffusion with the distributed capability disabled for use at home. This won't be updated with the original project, but these changes can be implemented locally as the official implementation is updated
+As the official OpenAI [Guided Diffusion](https://github.com/openai/guided-diffusion) and [Improved Diffusion](https://github.com/openai/improved-diffusion) implementations crash when training new models on non-distributed systems (like my laptop), here is a customised version of Guided Diffusion with the distributed capability disabled for use at home. This won't be updated with the original project, but these changes can be implemented locally as the official implementation is updated
 
 Changes to official implementation (these also work in Improved Diffusion):
 * guided_diffusion/train_util.py: disabled distributed synch params call, commented out line 124
